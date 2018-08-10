@@ -2,18 +2,20 @@ import axios from 'axios';
 
 class Api{
 
-	static getList(){
+	static getList(number){
 
-		axios.get('https://rickandmortyapi.com/api/character/')
-		.then( resp => return resp.data.info, err => return [] );
+		let url = number === 1 ? 'https://rickandmortyapi.com/api/character/' 
+							   :  `https://rickandmortyapi.com/api/character/?page=${number}`;
+							   
+		return axios.get(url);
 	}
 
 	static getEspecific(id){
 
 		if(!id){ return []; }
 
-		axios.get(`https://rickandmortyapi.com/api/character/?id=${id}`)
-		.then( resp => return resp.data.info, err => return [] );
+		return axios.get(`https://rickandmortyapi.com/api/character/?id=${id}`);
+		// .then( resp => return resp.data.info, err => return [] );
 	}
 
 }
