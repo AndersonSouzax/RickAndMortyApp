@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import { Grid, Cell, Card, CardTitle, CardActions, Textfield, ProgressBar } from 'react-mdl';
 import Pagination from "react-js-pagination";
-import Api from './api/Api'
-import './css/List.css';
-
-const contStyle = { textAlign : 'center' };
+import Api from './api/Api';
+import styles from './css/List.css';
 
 class List extends Component {
 
-    constructor(){
-        super();
+    constructor(props){
+        super(props);
         this.state = { 
             data : [], 
             activePage : 1, 
@@ -95,7 +93,7 @@ class List extends Component {
 
         return (
             
-            <div className="container" style={contStyle}>
+            <div>
 
                 <h3 className="list-title">Results</h3>
 
@@ -125,15 +123,15 @@ class List extends Component {
 
                                             <CardTitle expand />
                                             <CardActions style={{height: '52px', padding: '16px', background: 'rgba(0,0,0,0.2)'}}>
-                                                <span style={{color: '#fff', fontSize: '14px', fontWeight: '500'}}>
-                                                    {char.id}
+                                                <span style={{color: '#fff', fontSize: '15px', fontWeight: '500', margin : '0 3px 0 3px'}}>
+                                                    {char.id} |
                                                 </span>
 
-                                                <span style={{color: '#fff', fontSize: '14px', fontWeight: '500'}}>
-                                                    {char.name}
+                                                <span style={{color: '#fff', fontSize: '15px', fontWeight: '500', margin : '0 3px 0 3px'}}>
+                                                    {char.name} |
                                                 </span>
 
-                                                <span style={{color: '#fff', fontSize: '14px', fontWeight: '500'}}>
+                                                <span style={{color: '#fff', fontSize: '15px', fontWeight: '500', margin : '0 3px 0 3px'}}>
                                                     {char.species}
                                                 </span>                                        
 
@@ -153,7 +151,7 @@ class List extends Component {
                 </Grid>
 
                 <Pagination
-                    className="pagination"
+                    className={styles.pagination}
                     activePage={self.state.activePage}
                     itemsCountPerPage={10}
                     totalItemsCount={493}

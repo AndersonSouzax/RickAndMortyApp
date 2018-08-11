@@ -9,16 +9,26 @@
 
 .pagination li{
 	padding: 4px;
-    box-shadow: 1px 1px 1px #000;
+    color: #000;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14);
     border-radius: 3px;
     width: 30px;
     text-align: center;
     margin: 0 3px 0 3px;
+    transition: all 0.2s;
+    cursor: pointer;
+    background-color: #fff;
 }
 
+.pagination li:hover{
+    -ms-transform: scale(1.2, 1.2); /* IE 9 */
+    -webkit-transform: scale(1.2, 3); /* Safari */
+    transform: scale(1.2, 1.2);
+    color: #fff;
+    background-color:rgba(158,158,158,.2);
+}
 .pagination li a{
 	color: #000;
-    cursor: pointer;
     text-decoration: none;
     font-size: 18px;
 }
