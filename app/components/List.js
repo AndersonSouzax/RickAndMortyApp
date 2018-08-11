@@ -1,15 +1,48 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Grid, Cell, Card, CardTitle, CardActions, Textfield } from 'react-mdl';
+import { Grid, Cell, Card, CardTitle, CardActions, Textfield, ProgressBar } from 'react-mdl';
 import Pagination from "react-js-pagination";
 import Api from './api/Api'
 import './css/List.css';
+
+const contStyle = { textAlign : 'center' };
 
 class List extends Component {
 
     constructor(){
         super();
-        this.state = { data : [], activePage : 1 };
+        this.state = { 
+            data : [], 
+            activePage : 1, 
+            loading : false, 
+            pages: 0,
+            filtered : []
+        };
+    }
+
+    filterCards(){
+
+        let self = this;
+        let end = ( self.state.activePage * 10 );
+        let begin = end - 10;
+
+        self.setState({ 
+            filtered : self.state.data.slice(begin, end)
+        });
+    }
+
+    loadNewChars(pageNumber){
+
+        let self = this;
+
+        Api.getList(pageNumber).then( (resp) => { 
+            self.setState({ 
+                data : self.state.data.concat( resp.data.results || [] ),
+                pages : self.state.pages + 1 
+            });
+
+            self.filterCards(); 
+        });
     }
 
     componentDidMount(){
@@ -17,13 +50,42 @@ class List extends Component {
         let self = this;
 
         // Fetching the Characters 
-        Api.getList(1).then( (resp) =>  { self.setState({ data : resp.data.results || [] }) } );
+        self.loadNewChars(1);
     }
 
     handlePageChange(pageNumber){
 
         let self = this;
-        Api.getList(pageNumber).then( (resp) => { self.setState({ data : resp.data.results || [] , activePage: pageNumber }) } );
+
+        //Fetching new characters only when necessary
+        if( pageNumber > self.state.pages ){
+            self.loadNewChars(pageNumber);
+            self.setState( { activePage : pageNumber });
+        }else{
+            self.setState({ activePage : pageNumber });
+            self.filterCards();
+        }
+    }
+
+    searchByName(event){
+
+        let self = this;
+
+        if(!event.target.value){ 
+            self.setState({ filtered : self.state.data.slice() });
+            return;
+        }
+
+        self.setState({ loading : true });
+
+        let title = event.target.value.toLowerCase();
+        let result = self.state.data.filter( (char) => char.name.toLowerCase().indexOf(title) > -1 );
+
+        if( result.length > 0){
+            self.setState({ filtered : result, loading : false });
+        }else{
+            
+        }
     }
 
     render() {
@@ -33,60 +95,70 @@ class List extends Component {
 
         return (
             
-            <div className="App">
+            <div className="container" style={contStyle}>
 
                 <h3 className="list-title">Results</h3>
 
                 <Textfield
-                    onChange={() => {}}
+                    onChange={ self.searchByName.bind(this) }
                     label="Filter by Name"
                     floatingLabel
                     style={{width: '400px'}}
                 />
+                <i className="material-icons">search</i>
+
+                <ProgressBar indeterminate className={self.state.loading ? '' : 'hidden' } />
 
                 <Grid className="demo-grid-1">
 
                     {
-                        self.state.data.map( char => (
+                        self.state.filtered.length > 0 ?
 
-                            <Cell col={4} key={it--}>
+                            self.state.filtered.map( char => (
 
-                                <Route render={ ({ history }) => ( 
+                                <Cell col={4} key={it--}>
 
-                                    <Card shadow={0} style={{width: '256px', height: '256px', background: `url(${char.image}) center / cover`, margin: 'auto'}}
-                                          onClick={ () => { history.push(`list/${char.id}/`) } }>
+                                    <Route render={ ({ history }) => ( 
 
-                                        <CardTitle expand />
-                                        <CardActions style={{height: '52px', padding: '16px', background: 'rgba(0,0,0,0.2)'}}>
-                                            <span style={{color: '#fff', fontSize: '14px', fontWeight: '500'}}>
-                                                {char.id}
-                                            </span>
+                                        <Card shadow={0} style={{width: '256px', height: '256px', background: `url(${char.image}) center / cover`, margin: 'auto'}}
+                                              onClick={ () => { history.push(`list/${char.id}/`) } }>
 
-                                            <span style={{color: '#fff', fontSize: '14px', fontWeight: '500'}}>
-                                                {char.name}
-                                            </span>
+                                            <CardTitle expand />
+                                            <CardActions style={{height: '52px', padding: '16px', background: 'rgba(0,0,0,0.2)'}}>
+                                                <span style={{color: '#fff', fontSize: '14px', fontWeight: '500'}}>
+                                                    {char.id}
+                                                </span>
 
-                                            <span style={{color: '#fff', fontSize: '14px', fontWeight: '500'}}>
-                                                {char.species}
-                                            </span>                                        
+                                                <span style={{color: '#fff', fontSize: '14px', fontWeight: '500'}}>
+                                                    {char.name}
+                                                </span>
 
-                                        </CardActions>
-                                    </Card>
+                                                <span style={{color: '#fff', fontSize: '14px', fontWeight: '500'}}>
+                                                    {char.species}
+                                                </span>                                        
 
-                                )} key={char.id}/>
+                                            </CardActions>
+                                        </Card>
 
-                            </Cell>
+                                    )} key={char.id}/>
 
-                        ))
+                                </Cell>
+
+                            ))
+
+                        :
+
+                            <h5 className="list-no-result"> No results Found... </h5>
                     }
                 </Grid>
 
                 <Pagination
-                  activePage={self.state.activePage}
-                  itemsCountPerPage={10}
-                  totalItemsCount={493}
-                  pageRangeDisplayed={5}
-                  onChange={ self.handlePageChange }
+                    className="pagination"
+                    activePage={self.state.activePage}
+                    itemsCountPerPage={10}
+                    totalItemsCount={493}
+                    pageRangeDisplayed={5}
+                    onChange={ self.handlePageChange.bind(self) }
                 />
 
             </div>

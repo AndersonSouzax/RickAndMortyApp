@@ -13,7 +13,7 @@ class Main extends Component {
 
             <header className="App-header">
               <img src={imgSrc} className="App-logo" alt="logo" />
-              <h2 className="App-title">Awsome Rick And Morty Pics Viewer!</h2>
+              <h2 className="App-title">Awesome Rick And Morty Pics Viewer!</h2>
             </header>
 
             <p className="App-intro">
