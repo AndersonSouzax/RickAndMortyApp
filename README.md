@@ -1,6 +1,6 @@
 # Rick And Morty Pictures Viwer App
 
-Basic of images searching application made in React JS and inspired by cartoon Rick and Morty
+Basic images searching application made in React JS and inspired by cartoon Rick and Morty
 
 ### How it works?
 
