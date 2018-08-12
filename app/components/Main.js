@@ -4,16 +4,15 @@ import { Button } from 'react-mdl';
 import './css/Main.css';
 
 class Main extends Component {
+  
   render() {
-
-    let imgSrc = '/images/rick-main-pic.jpg';
     
     return (
         <div className="App">
 
             <header className="App-header">
-              <img src={imgSrc} className="App-logo" alt="logo" />
-              <h2 className="App-title">Awesome Rick And Morty Pics Viewer!</h2>
+              <img src='/images/new-rick-and-morty.jpg' className="App-logo" alt="logo" />
+              <h2 className="App-title">Awesome Rick And Morty Pictures Viewer!</h2>
             </header>
 
             <p className="App-intro">
@@ -24,9 +23,9 @@ class Main extends Component {
                         onClick={ () => { history.push(`list/`)} }>
                         Start
                     </Button>
-                )} />
+                )} /><br/><br/><br/>
       
-              Clique iniciar para começar a utilizar!
+              Click to start using!
 
             </p>
 

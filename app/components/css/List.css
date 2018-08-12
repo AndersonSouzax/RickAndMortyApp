@@ -20,6 +20,10 @@
     background-color: #fff;
 }
 
+.pagination .active{
+    background-color: rgba(158,158,158,.2) !important;
+}
+
 .pagination li:hover{
     -ms-transform: scale(1.2, 1.2); /* IE 9 */
     -webkit-transform: scale(1.2, 3); /* Safari */
@@ -31,4 +35,35 @@
 	color: #000;
     text-decoration: none;
     font-size: 18px;
+}
+
+.pagination li:hover a{
+    color: #fff;
+}
+
+.progress{
+    left: 30%;
+}
+
+.progress .bar1{
+    background-color: #000 !important;
+}
+
+.mdl-textfield__label,
+.mdl-textfield--floating-label{
+    color: #fff !important;
+}
+
+.charCard{
+    width: 256px;
+    height: 256px;
+    margin: auto;
+    cursor: pointer;
+}
+
+.infoSpan{
+    color: #fff;
+    font-size: 15px;
+    font-weight: 500;
+    margin : 0 3px 0 3px;
 }

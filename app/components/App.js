@@ -11,7 +11,7 @@ ReactDOM.render(
 	     	<main>
 			    <Switch>
 					<Route exact path='/' component={Main}/>
-				    <Route path='/list/' component={List}/>
+				    <Route exact path='/list/' component={List}/>
 				    <Route path='/list/:id/' component={Single}/>
 			    </Switch>
 		 	</main>

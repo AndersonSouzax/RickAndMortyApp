@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Grid, Cell, Card, CardTitle, CardActions, Textfield, ProgressBar } from 'react-mdl';
+import { Grid, Cell, Card, CardTitle, CardActions, Textfield, ProgressBar, Snackbar } from 'react-mdl';
 import Pagination from "react-js-pagination";
 import Api from './api/Api';
 import styles from './css/List.css';
@@ -11,10 +11,10 @@ class List extends Component {
         super(props);
         this.state = { 
             data : [], 
-            activePage : 1, 
-            loading : false, 
-            pages: 0,
-            filtered : []
+            activePage : 1,
+            pages: [],
+            filtered : [],
+            isSnackbarActive : false
         };
     }
 
@@ -33,10 +33,14 @@ class List extends Component {
 
         let self = this;
 
-        Api.getList(pageNumber).then( (resp) => { 
+        Api.getList(pageNumber).then( (resp) => {
+
+            let arr = self.state.pages;
+            arr.push(pageNumber);
+
             self.setState({ 
                 data : self.state.data.concat( resp.data.results || [] ),
-                pages : self.state.pages + 1 
+                pages : arr
             });
 
             self.filterCards(); 
@@ -56,7 +60,7 @@ class List extends Component {
         let self = this;
 
         //Fetching new characters only when necessary
-        if( pageNumber > self.state.pages ){
+        if( !self.state.pages.includes(pageNumber) ){
             self.loadNewChars(pageNumber);
             self.setState( { activePage : pageNumber });
         }else{
@@ -70,7 +74,7 @@ class List extends Component {
         let self = this;
 
         if(!event.target.value){ 
-            self.setState({ filtered : self.state.data.slice() });
+            self.filterCards();
             return;
         }
 
@@ -82,8 +86,17 @@ class List extends Component {
         if( result.length > 0){
             self.setState({ filtered : result, loading : false });
         }else{
-            
+            self.setState( { isSnackbarActive : true });
         }
+    }
+
+    saveChosenChar(char){
+        let obj = char || {};
+        localStorage.setItem('chosenChar', JSON.stringify(obj));
+    }
+
+    hideSnack(){
+        this.setState({ isSnackbarActive : false });
     }
 
     render() {
@@ -98,14 +111,13 @@ class List extends Component {
                 <h3 className="list-title">Results</h3>
 
                 <Textfield
+                    className={ styles.textInput}
                     onChange={ self.searchByName.bind(this) }
                     label="Filter by Name"
                     floatingLabel
                     style={{width: '400px'}}
                 />
                 <i className="material-icons">search</i>
-
-                <ProgressBar indeterminate className={self.state.loading ? '' : 'hidden' } />
 
                 <Grid className="demo-grid-1">
 
@@ -118,20 +130,32 @@ class List extends Component {
 
                                     <Route render={ ({ history }) => ( 
 
-                                        <Card shadow={0} style={{width: '256px', height: '256px', background: `url(${char.image}) center / cover`, margin: 'auto'}}
-                                              onClick={ () => { history.push(`list/${char.id}/`) } }>
+                                        <Card shadow={0} 
+
+                                            style={{ 
+                                                    background: `url(${char.image}) center / cover`,
+                                                    width: '256px',
+                                                    height: '256px',
+                                                    margin: 'auto',
+                                                    cursor: 'pointer'
+                                                    }}
+
+                                            onClick={ () => { 
+                                                self.saveChosenChar(char);
+                                                history.push(`${char.id}/`);
+                                            }}>
 
                                             <CardTitle expand />
                                             <CardActions style={{height: '52px', padding: '16px', background: 'rgba(0,0,0,0.2)'}}>
-                                                <span style={{color: '#fff', fontSize: '15px', fontWeight: '500', margin : '0 3px 0 3px'}}>
+                                                <span className={styles.infoSpan}>
                                                     {char.id} |
                                                 </span>
 
-                                                <span style={{color: '#fff', fontSize: '15px', fontWeight: '500', margin : '0 3px 0 3px'}}>
+                                                <span className={styles.infoSpan}>
                                                     {char.name} |
                                                 </span>
 
-                                                <span style={{color: '#fff', fontSize: '15px', fontWeight: '500', margin : '0 3px 0 3px'}}>
+                                                <span className={styles.infoSpan}>
                                                     {char.species}
                                                 </span>                                        
 
@@ -149,6 +173,12 @@ class List extends Component {
                             <h5 className="list-no-result"> No results Found... </h5>
                     }
                 </Grid>
+
+                <Snackbar
+                    active={self.state.isSnackbarActive}
+                    onTimeout={self.hideSnack.bind(self)}>
+                    No results here... try the next page
+                </Snackbar>
 
                 <Pagination
                     className={styles.pagination}
