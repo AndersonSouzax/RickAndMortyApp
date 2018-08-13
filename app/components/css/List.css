@@ -54,6 +54,10 @@
     color: #fff !important;
 }
 
+.mdl-textfield__label:after{
+    background-color: #fff !important;
+}
+
 .charCard{
     width: 256px;
     height: 256px;
