@@ -24,7 +24,7 @@ app.get('/', function(req,res){
   res.sendFile(path.join(__dirname +'/public/index.html'));
 });
 
-var server = http.createServer(app).listen(3000,function(err){
+var server = http.createServer(app).listen( ( process.env.PORT || 3000 ) ,function(err){
     if(err){
       console.log(err);
     }else{
