@@ -1,8 +1,6 @@
 var express = require('express');
 var http = require('http');
 var app = express();
-var bodyParser = require('body-parser');
-var ejs = require('ejs');
 var path = require('path');
 
 app.use(function(req,res,next){
@@ -16,11 +14,7 @@ app.use(function(req,res,next){
   next();
 });
 
-// support json encoded bodies
-app.use(bodyParser.json());
 
-// support encoded bodies
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/scripts', express.static(__dirname + '/node_modules'));
 app.use('/public',express.static(__dirname + '/public'));
 app.use('/images',express.static(__dirname + '/app/images'));
